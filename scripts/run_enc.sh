@@ -145,6 +145,11 @@ if [ "$PROFILE" = true ]
 then
     export HCC_PROFILE=2 
     export HCC_PROFILE_VERBOSE=0x3f
+    #export HIP_TRACE_API=1
+    #export HIP_TRACE_API_COLOR=none
+    #export HSA_TOOLS_LIB=./rocm-timeline-generator/hsa_trace/rtg_tracer.so 
+    #export RTG_HSA_TRACER_FILTER=core
+    #export RTG_HSA_TRACER_FILENAME=./hsa_trace.txt
     echo "Set profiling"
 fi
 
@@ -153,7 +158,7 @@ starttime=$(date +%s)
 output=$(python3 encoder.py --iter=$COUNT --seq_length=$LENGTH --batch=$BATCH --precision=$PRECISION --layers=$LAYERS --heads=$HEADS 2>&1 | tee log.txt)
 if [ "$PROFILE" = true ]
 then
-    /opt/rocm/hcc/bin/rpt log.txt > hist.txt
+   /opt/rocm/hcc/bin/rpt log.txt > hist.txt
 fi
 
 endtime=$(date +%s)

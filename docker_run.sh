@@ -53,8 +53,9 @@ then
     then
         IMAGE="rocm/tensorflow:rocm3.3-tf1.15-dev"
     else
+         IMAGE="rocm/tensorflow-private:rocm3.3-tf2.du-ofed4.6-openmpi4.0.0-horovod-rocm35thunk"
 #        IMAGE="rocm/tensorflow:rocm3.3-tf2.1-dev"
-        IMAGE="ekuznetsov139/bert_tf2:200616"
+#        IMAGE="ekuznetsov139/bert_tf2:200616"
     fi
 fi
 
@@ -64,7 +65,8 @@ then
     then
         IMAGE="nvcr.io/nvidia/tensorflow:20.03-tf1-py3"
     else
-        IMAGE="nvcr.io/nvidia/tensorflow:20.06-tf2-py3"
+        export TF_XLA_FLAGS="--tf_xla_auto_jit=2 --tf_xla_cpu_global_jit"
+        IMAGE="tensorflow:nvidia-tf2-profiler"
     fi
 fi
 

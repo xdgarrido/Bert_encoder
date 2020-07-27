@@ -30,6 +30,7 @@ import os
 # enable just error messages
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import tensorflow as tf
+from tensorflow import keras
 import modeling
 
 tf.compat.v1.disable_v2_behavior()
@@ -82,7 +83,6 @@ else:
 # Create a TensorBoard log file
 logs = "logs/" + datetime.now().strftime("%Y%m%d-%H%M%S")
 
-tf.profiler.experimental.start(logs)
 # Set the bert model input
 input_ids   = tf.ones(shape=(batch_size, seq_length), dtype=tf.int32)
 input_mask  = tf.ones(shape=(batch_size, seq_length), dtype=tf.int32)
@@ -117,9 +117,8 @@ encoder_train = opt.apply_gradients(grads_and_vars, global_step=global_step)
 init_op = tf.group(tf.compat.v1.global_variables_initializer(),
                    tf.compat.v1.local_variables_initializer())
 
-
-
 # fire-up bert
+tf.profiler.experimental.start(logs)
 with tf.compat.v1.Session() as sess:
   sess.run(init_op)
   for i in range(FLAGS.iter):
