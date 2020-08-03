@@ -40,6 +40,7 @@ flags = tf.compat.v1.flags
 FLAGS = flags.FLAGS
 
 flags.DEFINE_integer("iter", 5000, "Total number of iterations")
+flags.DEFINE_integer("prof_iter", 10, "Total number of iterations to be captured by profiler")
 flags.DEFINE_integer("batch", 6, "Batch size")
 flags.DEFINE_integer("seq_length", 512, "Sequence Length")
 flags.DEFINE_integer("heads",16,"Number of heads")
@@ -114,14 +115,21 @@ grads_and_vars       = opt.compute_gradients(loss,tvars)
 
 encoder_train = opt.apply_gradients(grads_and_vars, global_step=global_step)
 
+
 init_op = tf.group(tf.compat.v1.global_variables_initializer(),
                    tf.compat.v1.local_variables_initializer())
 
 # fire-up bert
-tf.profiler.experimental.start(logs)
+i = 0
 with tf.compat.v1.Session() as sess:
   sess.run(init_op)
-  for i in range(FLAGS.iter):
-    with tf.device('/GPU:0'):
+  with tf.device('/GPU:0'):
+    while i < (FLAGS.iter-FLAGS.prof_iter):
       sess.run(encoder_train) 
+      i = i+1
+    tf.profiler.experimental.start(logs)
+    while i < (FLAGS.iter):
+      sess.run(encoder_train) 
+      i = i+1
 tf.profiler.experimental.stop()
+print("Final iteration is ", i)

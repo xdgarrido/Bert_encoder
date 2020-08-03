@@ -48,6 +48,9 @@ while [ "$1" != "" ]; do
         --iter)
             COUNT=$VALUE
             ;;
+        --profiter)
+            PROFITER=$VALUE
+            ;;
         --mode)
             MODE=$VALUE
             ;;
@@ -91,6 +94,11 @@ then
       echo " SET ITERATIONS=$COUNT"
 fi
 
+if [ -z "$PROFITER" ]
+then
+      PROFITER=10
+      echo " SET PROFILE ITERATIONS=$COUNT"
+fi
 
 if [ -z "$MODE" ]
 then
@@ -155,13 +163,13 @@ fi
 
 starttime=$(date +%s)
 # run transformer by itself 
-output=$(python3 encoder.py --iter=$COUNT --seq_length=$LENGTH --batch=$BATCH --precision=$PRECISION --layers=$LAYERS --heads=$HEADS 2>&1 | tee log.txt)
+output=$(python3 encoder.py --iter=$COUNT --prof_iter=$PROFITER --seq_length=$LENGTH --batch=$BATCH --precision=$PRECISION --layers=$LAYERS --heads=$HEADS 2>&1 | tee log.txt)
 if [ "$PROFILE" = true ]
 then
    /opt/rocm/hcc/bin/rpt log.txt > hist.txt
 fi
 
 endtime=$(date +%s)
-echo "VENDOR=$VENDOR MODE=$MODE ITER=$COUNT BATCH_SIZE=$BATCH SEQ_LENGTH=$LENGTH PRECISION=$PRECISION LAYERS=$LAYERS HEADS=$HEADS" >> eval_results.txt
+echo "VENDOR=$VENDOR MODE=$MODE ITER=$COUNT PROF_ITER=$PROFITER BATCH_SIZE=$BATCH SEQ_LENGTH=$LENGTH PRECISION=$PRECISION LAYERS=$LAYERS HEADS=$HEADS" >> eval_results.txt
 secs_to_human "$(($(date +%s) - ${starttime}))" >> eval_results.txt
 

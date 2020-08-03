@@ -53,7 +53,8 @@ then
     then
         IMAGE="rocm/tensorflow:rocm3.3-tf1.15-dev"
     else
-         IMAGE="rocm/tensorflow-private:rocm3.3-tf2.du-ofed4.6-openmpi4.0.0-horovod-rocm35thunk"
+         IMAGE="rocm/tesorflow-private:desai"
+#        IMAGE="rocm/tensorflow-private:rocm3.3-tf2.du-ofed4.6-openmpi4.0.0-horovod-rocm35thunk"
 #        IMAGE="rocm/tensorflow:rocm3.3-tf2.1-dev"
 #        IMAGE="ekuznetsov139/bert_tf2:200616"
     fi
